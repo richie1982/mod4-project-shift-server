@@ -9,14 +9,15 @@ class UsersController < ApplicationController
         end
     end
 
-    # def create
-    #     user = User.find_or_create_by(user_params)
-    #     if user.valid?
-    #       render json: user 
-    #     else
-    #       render json: { error: "error" }, status: 404
-    #     end
-    # end
+    def create
+    
+        user = User.new(user_params)
+        if user.save
+          render json: { name: user.name, token: issue_token({ id: user.id }) }
+        else
+          render json: { errors: user.errors.full_messages }, status: 404
+        end
+    end
 
     def log_in
         user = User.find_by(name: params[:name])
@@ -50,9 +51,9 @@ class UsersController < ApplicationController
 
     private
 
-  def user_params
-    params.require(:user).permit(:name, :password)
-  end
+    def user_params
+        params.permit(:name, :password)
+    end
 
     
 end
